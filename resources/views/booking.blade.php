@@ -54,6 +54,7 @@
         </div>
     @endif
     <h2>Form Booking Lapangan Badminton</h2>
+    <a href="{{ route('home') }}" class="btn btn-primary btn-custom">Back to home</a>
     <form action="{{ route('book-store') }}" method="POST">
         @csrf
         <!-- Jika sudah login, Anda bisa menyertakan input hidden untuk mengirimkan informasi login -->

@@ -46,6 +46,7 @@
 </head>
 <body>
     <div class="container">
+        
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -109,7 +110,9 @@
                 <button type="submit">Kirim Pembayaran</button>
             </div>
         </form>
+        
     </div>
+    <a href="{{ route('home') }}" class="btn btn-primary btn-custom">Back to home</a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 </body>
