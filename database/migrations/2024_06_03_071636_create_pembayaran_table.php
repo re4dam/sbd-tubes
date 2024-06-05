@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id('id_pembayaran')->autoIncrement();
-            $table->foreignId('id_booking')->constrained('bookings');
-            $table->foreignId('id_metode_pembayaran')->constrained('metode_pembayaran');
+            $table->foreignId('id_booking')->constrained('bookings')->onDelete('cascade');
+            $table->foreignId('id_metode_pembayaran')->constrained('metode_pembayaran')->onDelete('cascade');
             $table->bigInteger('harga_pembayaran');
             $table->bigInteger('harga_dp');
             $table->string('bukti_pembayaran');

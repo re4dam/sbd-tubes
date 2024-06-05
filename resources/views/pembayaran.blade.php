@@ -42,7 +42,7 @@
     </style>
 </head>
 <body>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST">
         @csrf
 
         <label for="waktu_masuk">Waktu Masuk</label>

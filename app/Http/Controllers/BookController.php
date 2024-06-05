@@ -33,13 +33,6 @@ class BookController extends Controller
 
         $dp = ($request->durasi * 50000) / 2;
 
-            // if(DB::select('')){
-            //     echo'ini error';
-            // }
-
-            // else {
-            // Buat pelanggan baru
-
             // Periksa apakah ada booking yang bertabrakan
                 $existingBookings = Booking::where('tanggal', $request->tanggal)
                 ->where(function ($query) use ($mulai, $selesai) {
