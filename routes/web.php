@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PembayaranController;
 
@@ -36,9 +37,19 @@ Route::post('/register-store', [PelangganController::class, 'pelangganCreate'])-
 
 Route::get('dashboard', [DashboardController::class, 'dashboard']);
 
+Route::get('adminpage', [AdminController::class, 'adminpage'])->name('adminpage');
+Route::post('approve/{id_booking}', [AdminController::class, 'approval'])->name('approve');
+
+
 Route::get('/profile', [DashboardController::class, 'profilePage'])->name('profile')->middleware('auth');
 
 Route::get('/booking', [BookController::class,'booking'])->name('book-time')->middleware('auth');
 Route::post('/booking-store',[BookController::class,'store'])->name('book-store');
 
-Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran_view');
+// Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran_view');
+Route::get('/pembayaran/{id_booking}', [PembayaranController::class, 'index'])->name('pembayaran.index');
+Route::post('/pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+
+// Route::post('/approve/{id_booking}', [AdminController::class, 'approval'])->name('approve');
+
+Route::get('/cart', [BookController::class, 'cart'])->name('cart')->middleware('auth');;

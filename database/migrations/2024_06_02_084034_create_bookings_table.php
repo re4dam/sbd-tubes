@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('durasi');
             $table->time('waktu_keluar');
             $table->bigInteger('uang_dp');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

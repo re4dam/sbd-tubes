@@ -54,6 +54,7 @@
               @csrf
               <button class="btn btn-secondary btn-custom">Logout</button>
             </form>
+            <a href="{{ route('cart') }}" class="btn btn-secondary btn-custom">My Booking</a>
             @else
             <a href="{{ route('login') }}" class="btn btn-secondary btn-custom">Login</a>
             @endauth

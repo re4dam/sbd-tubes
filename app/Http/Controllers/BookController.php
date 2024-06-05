@@ -22,44 +22,44 @@ class BookController extends Controller
         //     'waktu_masuk' => 'required|time', // Validasi unik email di tabel pelanggan
         //     'durasi' => 'required|integer|max:18',
         // ]);
-        $mulai = $request->input('waktu_masuk');
-
-        $mulai = new DateTime($mulai);
-
+    
+        $mulai = new DateTime($request->input('waktu_masuk'));
         $durasi = new DateInterval('PT'.$request->input('durasi').'H');
-
         $selesai = clone $mulai;
         $selesai->add($durasi);
-
         $dp = ($request->durasi * 50000) / 2;
-
-            // Periksa apakah ada booking yang bertabrakan
-                $existingBookings = Booking::where('tanggal', $request->tanggal)
-                ->where(function ($query) use ($mulai, $selesai) {
-                    $query->whereBetween('waktu_masuk', [$mulai, $selesai])
-                        ->orWhereBetween('waktu_keluar', [$mulai, $selesai])
-                        ->orWhere(function ($query) use ($mulai, $selesai) {
-                            $query->where('waktu_masuk', '<', $mulai)
-                                    ->where('waktu_keluar', '>', $selesai);
-                        });
-                })
-                ->exists();
-
-            if ($existingBookings) {
-                return redirect()->back()->withErrors(['error' => 'Waktu yang dipilih sudah dibooking oleh orang lain.']);
-            }  
-
-            Booking::create([
+    
+        // Periksa apakah ada booking yang bertabrakan
+        $existingBookings = Booking::where('tanggal', $request->tanggal)
+            ->where(function ($query) use ($mulai, $selesai) {
+                $query->whereBetween('waktu_masuk', [$mulai, $selesai])
+                      ->orWhereBetween('waktu_keluar', [$mulai, $selesai])
+                      ->orWhere(function ($query) use ($mulai, $selesai) {
+                          $query->where('waktu_masuk', '<', $mulai)
+                                ->where('waktu_keluar', '>', $selesai);
+                      });
+            })
+            ->exists();
+    
+        if ($existingBookings) {
+            return redirect()->back()->withErrors(['error' => 'Waktu yang dipilih sudah dibooking oleh orang lain.']);
+        }
+    
+        $booking = Booking::create([
             'id_pelanggan'=> $request->id_pelanggan,
             'tanggal'=> $request->tanggal,
             'waktu_masuk'=> $mulai,
             'durasi'=> $request->durasi,
             'waktu_keluar'=> $selesai,
             'uang_dp'=> $dp
-            ]);
-        // }
+        ]);
+    
+        // Redirect dengan booking ID
+        return redirect()->route('pembayaran.index', ['id_booking' => $booking->id_booking])->with('success', 'Booking berhasil ditambahkan');
+    }
 
-        // Redirect dengan pesan sukses
-        return redirect()->intended('pembayaran')->with('success', 'Pelanggan berhasil ditambahkan');
+    public function cart(){
+        $bookings = Booking::all(); // Make sure to fetch all bookings to pass to the view
+        return view('user_booking', compact('bookings'));
     }
 }
