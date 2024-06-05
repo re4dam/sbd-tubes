@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PelangganController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PembayaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,3 +40,5 @@ Route::get('/profile', [DashboardController::class, 'profilePage'])->name('profi
 
 Route::get('/booking', [BookController::class,'booking'])->name('book-time')->middleware('auth');
 Route::post('/booking-store',[BookController::class,'store'])->name('book-store');
+
+Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran_view');

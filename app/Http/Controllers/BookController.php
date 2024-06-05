@@ -33,12 +33,29 @@ class BookController extends Controller
 
         $dp = ($request->durasi * 50000) / 2;
 
-        if(DB::select('')){
+            // if(DB::select('')){
+            //     echo'ini error';
+            // }
 
-        }
-
-        else {
+            // else {
             // Buat pelanggan baru
+
+            // Periksa apakah ada booking yang bertabrakan
+                $existingBookings = Booking::where('tanggal', $request->tanggal)
+                ->where(function ($query) use ($mulai, $selesai) {
+                    $query->whereBetween('waktu_masuk', [$mulai, $selesai])
+                        ->orWhereBetween('waktu_keluar', [$mulai, $selesai])
+                        ->orWhere(function ($query) use ($mulai, $selesai) {
+                            $query->where('waktu_masuk', '<', $mulai)
+                                    ->where('waktu_keluar', '>', $selesai);
+                        });
+                })
+                ->exists();
+
+            if ($existingBookings) {
+                return redirect()->back()->withErrors(['error' => 'Waktu yang dipilih sudah dibooking oleh orang lain.']);
+            }  
+
             Booking::create([
             'id_pelanggan'=> $request->id_pelanggan,
             'tanggal'=> $request->tanggal,
@@ -47,9 +64,9 @@ class BookController extends Controller
             'waktu_keluar'=> $selesai,
             'uang_dp'=> $dp
             ]);
-        }
+        // }
 
         // Redirect dengan pesan sukses
-        return redirect()->intended('dashboard')->with('success', 'Pelanggan berhasil ditambahkan');
+        return redirect()->intended('pembayaran')->with('success', 'Pelanggan berhasil ditambahkan');
     }
 }
