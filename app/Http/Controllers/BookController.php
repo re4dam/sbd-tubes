@@ -13,9 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class BookController extends Controller
 {
     public function booking(){
-        $vouchers = voucher_diskon::all();
-        $paketFasilitas = paket_fasilitas::all();
-
+        $vouchers = DB::select('SELECT * FROM voucher_diskon');
+        $paketFasilitas = DB::select('SELECT * FROM paket_fasilitas');
         
         return view('booking', compact('vouchers', 'paketFasilitas'));
     }

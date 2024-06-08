@@ -165,11 +165,10 @@ select.tm-select.form-control:not([size]):not([multiple]) { height: 45px; }
 }
 label { font-weight: 700; }
 .tm-search-form {
-    background-color: #f5f6f6;
-    padding: 25px 25px 15px;
+    background-color: #72bde9;
+    padding: 0px 0px 0px;
     width: 100%;
     max-width: 830px;
-    margin-left: 15px;
     margin-right: 15px;
 }
 
