@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id('id_booking')->autoIncrement();
             $table->foreignId('id_pelanggan')->constrained('pelanggan');
+            $table->foreignId('id_voucher_diskon')->constrained('voucher_diskon');
             $table->date('tanggal');
             $table->time('waktu_masuk');
             $table->integer('durasi');

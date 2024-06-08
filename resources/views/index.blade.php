@@ -7,10 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #79aee4;
+            color: white;
         }
         .hero-section {
-            background: url('https://via.placeholder.com/1200x400') no-repeat center center;
+            background: url('dokum/banner.jpg') no-repeat center center;
             background-size: cover;
             height: 400px;
             color: white;
@@ -27,6 +28,10 @@
             font-size: 1.5rem;
             margin-bottom: 20px;
         }
+        .buttons-container {
+            text-align: center;
+            margin-top: -100px; /* Adjust this value to position the buttons closer or further from the banner */
+        }
         .gallery img {
             width: 100%;
             height: auto;
@@ -40,38 +45,47 @@
             border-radius: 20px;
             padding: 10px 20px;
         }
+        .container h1 {
+            color: white;
+        }
+        .btn-custom-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-custom-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
     </style>
 </head>
 <body>
     <div class="hero-section">
-        <h1>GOR Badminton Booking</h1>
-        <p>Sewa lapangan badminton dengan mudah dan cepat</p>
-        <div>
-            <a href="{{ route('book-time') }}" class="btn btn-primary btn-custom">Book Now</a>
-            @auth
+    </div>
+    <div class="buttons-container">
+        <a href="{{ route('book-time') }}" class="btn btn-primary btn-custom">Book Now</a>
+        @auth
             <a href="{{ route('profile') }}" class="btn btn-secondary btn-custom">Profile</a>
-            <form action="{{ route('logout') }}" method="post">
-              @csrf
-              <button class="btn btn-secondary btn-custom">Logout</button>
+            <form action="{{ route('logout') }}" method="post" style="display: inline;">
+                @csrf
+                <button class="btn btn-secondary btn-custom">Logout</button>
             </form>
             <a href="{{ route('cart') }}" class="btn btn-secondary btn-custom">My Booking</a>
-            @else
+        @else
             <a href="{{ route('login') }}" class="btn btn-secondary btn-custom">Login</a>
-            @endauth
-        </div>
+        @endauth
     </div>
 
     <div class="container">
-        <h2 class="text-center mt-5">Gallery</h2>
+        <h1 class="text-center mt-5">Gallery</h1>
         <div class="row gallery">
-            <div class="col-md-4">
-                <img src="https://via.placeholder.com/400x300" alt="GOR Image 1">
+            <div class="col-md-4 mb-4">
+                <img src="{{ asset('dokum/1.jpg') }}" alt="GOR Image 1">
             </div>
-            <div class="col-md-4">
-                <img src="https://via.placeholder.com/400x300" alt="GOR Image 2">
+            <div class="col-md-4 mb-4">
+                <img src="{{ asset('dokum/2.jpg') }}" alt="GOR Image 2">
             </div>
-            <div class="col-md-4">
-                <img src="https://via.placeholder.com/400x300" alt="GOR Image 3">
+            <div class="col-md-4 mb-4">
+                <img src="{{ asset('dokum/3.jpg') }}" alt="GOR Image 3">
             </div>
         </div>
     </div>

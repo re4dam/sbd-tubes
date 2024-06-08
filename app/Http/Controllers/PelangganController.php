@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pelanggan;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class PelangganController extends Controller
@@ -26,20 +25,20 @@ class PelangganController extends Controller
             'password_pelanggan' => 'required|string|max:18',
         ]);
 
-        // Buat pelanggan baru
-        Pelanggan::create([
-            'nama_pelanggan' => $request->nama_pelanggan,
-            'no_telefon_pelanggan' => $request->no_telefon_pelanggan,
-            'email_pelanggan' => $request->email_pelanggan,
-            'password_pelanggan' => Hash::make($request->password_pelanggan), // Hash password sebelum disimpan
-        ]);
+        // Hash the password
+        $hashedPassword = Hash::make($request->password_pelanggan);
+
+        // Buat pelanggan baru menggunakan raw SQL query
+        DB::statement("
+            INSERT INTO pelanggan (nama_pelanggan, no_telefon_pelanggan, email_pelanggan, password_pelanggan) 
+            VALUES ('{$request->nama_pelanggan}', '{$request->no_telefon_pelanggan}', '{$request->email_pelanggan}', '{$hashedPassword}')
+        ");
         
-        // Buat user terkait (jika diperlukan)
-        User::create([
-            'name' => $request->nama_pelanggan,
-            'email' => $request->email_pelanggan,
-            'password' => Hash::make($request->password_pelanggan), // Hash password sebelum disimpan
-        ]);
+        // Buat user terkait (jika diperlukan) menggunakan raw SQL query
+        DB::statement("
+            INSERT INTO users (name, email, password) 
+            VALUES ('{$request->nama_pelanggan}', '{$request->email_pelanggan}', '{$hashedPassword}')
+        ");
 
         // Redirect dengan pesan sukses
         return redirect()->route('login')->with('success', 'Pelanggan berhasil ditambahkan');

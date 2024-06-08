@@ -19,26 +19,36 @@
                     <th scope="col">Waktu Masuk</th>
                     <th scope="col">Durasi</th>
                     <th scope="col">Waktu Keluar</th>
-                    <th scope="col">Harga DP</th>
+                    <th scope="col">Harga Total</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Actions</th> <!-- Tambah kolom untuk actions -->
                 </tr>
             </thead>
             @forelse($bookings as $item)
                 <tbody>
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
-                        <td>{{ $item->created_at }}</td>
+                        <td>{{ $item->tanggal }}</td>
                         <td>{{ $item->waktu_masuk }}</td>
                         <td>{{ $item->durasi }} jam</td>
                         <td>{{ $item->waktu_keluar }}</td>
-                        <td>Rp. {{ number_format($item->uang_dp, 2, ',', '.') }}</td>
+                        <td>Rp. {{ number_format($item->harga_total, 2, ',', '.') }}</td>
                         <td>{{ $item->status }}</td>
+                        <td>
+                            @if($item->status == 'pending')
+                            <form action="{{ route('booking.delete', $item->id_booking) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                            @endif
+                        </td>
                     </tr>
                 </tbody>
             @empty
                 <tbody>
                     <tr>
-                        <td colspan="7" class="text-center">No bookings found</td>
+                        <td colspan="8" class="text-center">No bookings found</td>
                     </tr>
                 </tbody>
             @endforelse

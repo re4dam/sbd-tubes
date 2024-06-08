@@ -8,6 +8,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PembayaranController;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -52,4 +55,5 @@ Route::post('/pembayaran', [PembayaranController::class, 'store'])->name('pembay
 
 // Route::post('/approve/{id_booking}', [AdminController::class, 'approval'])->name('approve');
 
-Route::get('/cart', [BookController::class, 'cart'])->name('cart')->middleware('auth');;
+Route::get('/cart', [BookController::class, 'cart'])->name('cart')->middleware('auth');
+Route::delete('/cart/{id}', [BookController::class, 'delete'])->name('booking.delete');

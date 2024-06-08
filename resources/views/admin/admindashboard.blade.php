@@ -25,7 +25,7 @@
                     <th scope="col">Waktu Masuk</th>
                     <th scope="col">Durasi</th>
                     <th scope="col">Waktu Keluar</th>
-                    <th scope="col">Harga DP</th>
+                    <th scope="col">Harga Total</th>
                     <th scope="col">Status</th>
                     <th scope="col">Aksi</th>
                 </tr>
@@ -34,18 +34,19 @@
                 <tbody>
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
-                        <td>{{ $item->created_at }}</td>
+                        <td>{{ $item->tanggal }}</td>
                         <td>{{ $item->waktu_masuk }}</td>
                         <td>{{ $item->durasi }} jam</td>
                         <td>{{ $item->waktu_keluar }}</td>
-                        <td>Rp. {{ number_format($item->uang_dp, 2, ',', '.') }}</td>
+                        <td>Rp. {{ number_format($item->harga_total, 2, ',', '.') }}</td>
                         <td>{{ $item->status }}</td>
                         <td>
-                            <!-- Tombol untuk menyetujui data booking -->
+                            @if($item->status == 'pending')
                             <form action="{{ route('approve', ['id_booking' => $item->id_booking]) }}" method="POST">
                                 @csrf
                                 <button class="btn btn-success">Setujui</button>
                             </form>
+                            @endif
                         </td>
                     </tr>
                 </tbody>
