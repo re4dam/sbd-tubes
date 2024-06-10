@@ -28,13 +28,13 @@ class PelangganController extends Controller
         // Hash the password
         $hashedPassword = Hash::make($request->password_pelanggan);
 
-        // Buat pelanggan baru menggunakan raw SQL query
+        // Buat pelanggan baru menggunakan SQL query
         DB::statement("
             INSERT INTO pelanggan (nama_pelanggan, no_telefon_pelanggan, email_pelanggan, password_pelanggan) 
             VALUES ('{$request->nama_pelanggan}', '{$request->no_telefon_pelanggan}', '{$request->email_pelanggan}', '{$hashedPassword}')
         ");
         
-        // Buat user terkait (jika diperlukan) menggunakan raw SQL query
+        // Buat user terkait (jika diperlukan) menggunakan SQL query
         DB::statement("
             INSERT INTO users (name, email, password) 
             VALUES ('{$request->nama_pelanggan}', '{$request->email_pelanggan}', '{$hashedPassword}')

@@ -12,51 +12,60 @@ class PembayaranController extends Controller
 {
     public function index($id_booking)
     {
-        // Fetch the booking, metodepembayaran, and voucher information using raw SQL queries
+        // Ambil informasi pemesanan, metodepembayaran, dan voucher menggunakan kueri SQL
         $booking = DB::select("SELECT * FROM bookings WHERE id_booking = $id_booking")[0];
         $metodePembayaran = DB::select("SELECT * FROM metode_pembayaran");
 
-        // Fetch the voucher diskon if applicable
+        // Ambil diskon voucher jika berlaku
         $voucher_diskon = null;
         if ($booking->id_voucher_diskon) {
-            $voucher_diskon = DB::table('voucher_diskon')->where('id_voucher_diskon', $booking->id_voucher_diskon)->first();
-        }   
-
-        // Fetch the paket fasilitas information if applicable
-        $paket_fasilitas = null;
-        if ($booking->id_paket_fasilitas) {
-            $paket_fasilitas = DB::table('paket_fasilitas')->where('id_paket_fasilitas', $booking->id_paket_fasilitas)->first();
-            $harga_paket = $paket_fasilitas->harga_paket_fasilitas;
+            $voucher_diskon = DB::select("SELECT * FROM voucher_diskon WHERE id_voucher_diskon = ?", 
+            [$booking->id_voucher_diskon]);
+            if (!empty($voucher_diskon)) {
+                $voucher_diskon = $voucher_diskon[0];
+            }
         }
 
-        // Calculate harga_pembayaran
+        // Ambil informasi paket fasilitas jika ada
+        $paket_fasilitas = null;
+        if ($booking->id_paket_fasilitas) {
+            $paket_fasilitas = DB::select("SELECT * FROM paket_fasilitas WHERE id_paket_fasilitas = ?", 
+            [$booking->id_paket_fasilitas]);
+            if (!empty($paket_fasilitas)) {
+                $paket_fasilitas = $paket_fasilitas[0];
+                $harga_paket = $paket_fasilitas->harga_paket_fasilitas;
+            }
+        }
+
+        // Hitung harga_pembayaran
         $durasi = $booking->durasi;
         $harga_pembayaran = $durasi * 50000;
 
-        // Fetch pelanggan based on the booking
+        // Ambil pelanggan berdasarkan pemesanan
         $pelanggan = Pelanggan::find($booking->id_pelanggan);
 
-        // Fetch membership information of the pelanggan
+        // Fetch membership informasi dari pelanggan
         $membership = null;
         if ($pelanggan) {
             $membership = $pelanggan->membership;
         }
 
-        // Calculate discount if voucher diskon is available and not "tidak ada"
+        // Kalkulasi diskon jika voucher diskon ada dan tidak "tidak ada"
         if ($voucher_diskon && $voucher_diskon->id_voucher_diskon != 4) {
-            $diskon = 30; // Assuming a flat 30% discount
+            $diskon = 30; // diskonnya 30%
             $harga_pembayaran = $harga_pembayaran - ($harga_pembayaran * ($diskon / 100));
         }
 
-        // Check if the customer has a membership
+        // Check pelanggan apakah punya membership atau tidak ada
         if ($membership && $membership->kode_membership != 'tidak ada') {
-            $harga_pembayaran = 0; // Set the price to 0 if membership exists
-            $dp = 0; // Set the down payment to 0 as well
+            $harga_pembayaran = 0; // Gratisin
+            $dp = 0; // Gratisin
         } else {
-            // Calculate dp based on discounted harga_pembayaran
+            // Kalkulasi dp normal
             $dp = $harga_pembayaran / 2;
         }
 
+        // Harga total dapat dari penjumlahan harga paket + harga pembayaran
         $harga_total = $harga_paket + $harga_pembayaran;
 
         return view('pembayaran', compact('booking', 'metodePembayaran', 'harga_pembayaran', 'dp', 'voucher_diskon', 'paket_fasilitas', 'harga_total', 'membership'));
@@ -71,52 +80,61 @@ class PembayaranController extends Controller
 
         $buktiPembayaran = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
 
-        // Fetch the booking using a raw SQL query
         $booking = DB::select("SELECT * FROM bookings WHERE id_booking = " . $request->input('booking_id'))[0];
         $durasi = $booking->durasi;
         $harga_pembayaran = $durasi * 50000;
 
-        // Fetch the voucher diskon if applicable
+        // Ambil diskon voucher jika berlaku
         $voucher_diskon = null;
         if ($booking->id_voucher_diskon) {
-            $voucher_diskon = DB::table('voucher_diskon')->where('id_voucher_diskon', $booking->id_voucher_diskon)->first();
+            $voucher_diskon = DB::select("SELECT * FROM voucher_diskon WHERE id_voucher_diskon = ?", 
+            [$booking->id_voucher_diskon]);
+            if (!empty($voucher_diskon)) {
+                $voucher_diskon = $voucher_diskon[0];
+            }
         }
 
-        // Fetch the paket fasilitas information if applicable
+        // Ambil informasi paket fasilitas jika ada
         $paket_fasilitas = null;
         if ($booking->id_paket_fasilitas) {
-            $paket_fasilitas = DB::table('paket_fasilitas')->where('id_paket_fasilitas', $booking->id_paket_fasilitas)->first();
-            $harga_paket = $paket_fasilitas->harga_paket_fasilitas;
+            $paket_fasilitas = DB::select("SELECT * FROM paket_fasilitas WHERE id_paket_fasilitas = ?", 
+            [$booking->id_paket_fasilitas]);
+            if (!empty($paket_fasilitas)) {
+                $paket_fasilitas = $paket_fasilitas[0];
+                $harga_paket = $paket_fasilitas->harga_paket_fasilitas;
+            }
         }
 
-        // Fetch pelanggan based on the booking
+        // Fetch pelanggan sesuai dari booking
         $pelanggan = Pelanggan::find($booking->id_pelanggan);
 
-        // Fetch membership information of the pelanggan
+        // Fetch membership informasi dari pelanggan
         $membership = null;
         if ($pelanggan) {
             $membership = $pelanggan->membership;
         }
 
-        // Calculate discount if voucher diskon is available and not "tidak ada"
+        // Kalkulasi diskon jika voucher diskon ada dan tidak "tidak ada"
         if ($voucher_diskon && $voucher_diskon->id_voucher_diskon != 4) {
             $diskon = 30; // Assuming a flat 30% discount
             $harga_pembayaran = $harga_pembayaran - ($harga_pembayaran * ($diskon / 100));
         }
 
-        // Check if the customer has a membership
+        // Check pelanggan apakah punya membership atau tidak ada
         if ($membership && $membership->kode_membership != 'tidak ada') {
-            $harga_pembayaran = 0; // Set the price to 0 if membership exists
-            $dp = 0; // Set the down payment to 0 as well
+            $harga_pembayaran = 0; // Gratisin
+            $dp = 0; // Gratisin
         } else {
-            // Calculate dp based on discounted harga_pembayaran
+            // Kalkulasi dp normal
             $dp = $harga_pembayaran / 2;
         }
 
+        // Harga total dapat dari penjumlahan harga paket + harga pembayaran
         $harga_total = $harga_paket + $harga_pembayaran;
 
-        // Insert the new pembayaran using a raw SQL query
-        DB::statement("INSERT INTO pembayaran (id_booking, id_metode_pembayaran, harga_pembayaran, harga_dp, bukti_pembayaran, harga_total) VALUES (?, ?, ?, ?, ?, ?)", [
+        // Masukkan pembayaran baru menggunakan kueri SQL
+        DB::statement("INSERT INTO pembayaran (id_booking, id_metode_pembayaran, 
+            harga_pembayaran, harga_dp, bukti_pembayaran, harga_total) VALUES (?, ?, ?, ?, ?, ?)", [
             $request->input('booking_id'),
             $request->input('metode_pembayaran'),
             $harga_pembayaran,
@@ -125,6 +143,6 @@ class PembayaranController extends Controller
             $harga_total
         ]);
 
-        return redirect()->route('pembayaran.index', $request->input('booking_id'))->with('success', 'Pembayaran berhasil dilakukan.');
+        return redirect()->route('pembayaran.index', $request->input('booking_id'))->with('success', 'Pembayaran berhasil.');
     }
 }

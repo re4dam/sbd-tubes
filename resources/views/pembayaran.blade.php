@@ -14,22 +14,41 @@
             font-family: Arial, sans-serif;
             margin: 20px;
             padding: 0;
-            background-color: aqua
+            background-image: url('{{ asset('dokum/badmin.jpg') }}');
+            background-size: cover; /* Cover the entire background */
+            background-position: center; /* Center the background image */
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid #4aaae2;
             border-radius: 10px;
-            background-color: #f9f9f9;
+            background-color: #4aaae2;
         }
         h2 {
             text-align: center;
             margin-bottom: 20px;
         }
-        .table {
-            margin-bottom: 20px;
+        .table.custom-table {
+            background-color: #4aaae2;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table.custom-table th,
+        .table.custom-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table.custom-table th {
+            background-color: #4aaae2;
+            color: white;
+        }
+
+        .table.custom-table td {
+            background-color: #e0f4fb;
         }
         button {
             background-color: #4CAF50;
@@ -72,7 +91,7 @@
             @csrf
             <input type="hidden" name="booking_id" value="{{ $booking->id_booking }}">
         
-            <table class="table">
+            <table class="table custom-table">
                 <tr>
                     <th>Waktu Masuk</th>
                     <td><input type="text" class="form-control" id="waktu_masuk" name="waktu_masuk" value="{{ $booking->waktu_masuk }}" readonly></td>

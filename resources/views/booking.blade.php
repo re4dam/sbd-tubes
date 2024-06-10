@@ -28,7 +28,7 @@
             margin-bottom: 50px;
         }
         .form-container, .info-container {
-            background-color: #72bde9;
+            background-color: #4aaae2;
             border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             padding: 30px;
@@ -219,6 +219,7 @@
             </div>
         </div>
     </div>
+    <a href="{{ route('home') }}" class="btn btn-secondary btn-custom">Back to home</a>
 
     <!-- load JS files -->
     <script src="{{ asset('bootstrapke2/js/jquery-1.11.3.min.js') }}"></script>             <!-- jQuery (https://jquery.com/download/) -->

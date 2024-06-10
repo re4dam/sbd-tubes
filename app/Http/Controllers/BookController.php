@@ -34,22 +34,21 @@ class BookController extends Controller
         $selesai = clone $mulai;
         $selesai->add($durasi);
 
-        // Initial calculation of harga_pembayaran
+        // inisial awal harga pembayaran
         $harga_pembayaran = $request->durasi * 50000;
 
-        // Check and apply discount if applicable
+        // ngecek dan pakai diskon jika terpakai
         if ($request->id_voucher_diskon) {
             $voucher_diskon = DB::table('voucher_diskon')->where('id_voucher_diskon', $request->id_voucher_diskon)->first();
             if ($voucher_diskon && $voucher_diskon->id_voucher_diskon != 4) {
-                $diskon = 30; // Assuming a flat 30% discount
+                $diskon = 30; 
                 $harga_pembayaran = $harga_pembayaran - ($harga_pembayaran * ($diskon / 100));
             }
         }
 
-        // Calculate dp based on discounted harga_pembayaran
+        // kalkulasi dp
         $dp = $harga_pembayaran / 2;
 
-        // Convert DateTime objects to strings for SQL queries
         $mulaiString = $mulai->format('Y-m-d H:i:s');
         $selesaiString = $selesai->format('Y-m-d H:i:s');
         $tanggal = $request->input('tanggal');
@@ -73,14 +72,18 @@ class BookController extends Controller
             return redirect()->back()->withErrors(['error' => 'Waktu yang dipilih sudah dibooking oleh orang lain.']);
         }
 
-        // Insert the new booking using raw SQL query
+        // Masukkan pemesanan baru menggunakan kueri SQL
         DB::statement("
-            INSERT INTO bookings (id_pelanggan, id_voucher_diskon, id_paket_fasilitas, tanggal, waktu_masuk, durasi, waktu_keluar, uang_dp)
-            VALUES ('$id_pelanggan', '$id_voucher_diskon', '$id_paket_fasilitas', '$tanggal', '$mulaiString', '$duration', '$selesaiString', '$dp')
+            INSERT INTO bookings (id_pelanggan, id_voucher_diskon, id_paket_fasilitas, 
+            tanggal, waktu_masuk, durasi, waktu_keluar, uang_dp)
+            VALUES ('$id_pelanggan', '$id_voucher_diskon', '$id_paket_fasilitas', 
+            '$tanggal', '$mulaiString', '$duration', '$selesaiString', '$dp')
         ");
 
-        // Retrieve the ID of the newly created booking
-        $newBooking = DB::select("SELECT id_booking FROM bookings WHERE id_pelanggan = '$id_pelanggan' AND tanggal = '$tanggal' AND waktu_masuk = '$mulaiString' LIMIT 1");
+        // Ambil ID pemesanan yang baru dibuat
+        $newBooking = DB::select("SELECT id_booking FROM bookings WHERE id_pelanggan = 
+        '$id_pelanggan' AND tanggal = '$tanggal' AND waktu_masuk = '$mulaiString' LIMIT 1");
+
         $id_booking = $newBooking[0]->id_booking;
 
         // Redirect dengan booking ID
@@ -89,10 +92,10 @@ class BookController extends Controller
 
     public function cart()
     {
-        // Get the id pelanggan of the currently authenticated user
+        // Cari id pelanggan
         $id_pelanggan = Auth::id();
 
-        // Fetch bookings for the current user with total payment using raw SQL query
+        // Ambil pemesanan untuk pengguna saat ini dengan total pembayaran menggunakan kueri SQL
         $bookings = DB::select("
             SELECT b.*, p.*
             FROM bookings b
@@ -105,7 +108,7 @@ class BookController extends Controller
 
     public function delete($id) {
         // Hapus booking berdasarkan ID yang diberikan
-        DB::table('bookings')->where('id_booking', $id)->delete();
+        DB::delete("DELETE FROM bookings WHERE id_booking = ?", [$id]);
     
         // Redirect kembali ke halaman user_booking dengan pesan sukses
         return redirect()->route('cart')->with('success', 'Booking berhasil dihapus');
