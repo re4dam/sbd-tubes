@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -12,8 +13,19 @@ class DashboardController extends Controller
     }
 
     public function profilePage(){
+        $email = auth()->user()->email;
+
+        $pelanggan = DB::select('SELECT * FROM pelanggan WHERE email_pelanggan = ?', [$email]);
+
         return view('profile', [
-            'pelanggan' => Pelanggan::where('email_pelanggan', auth()->user()->email)->get()
+            'pelanggan' => $pelanggan
         ]);
+    }
+
+    public function infoAdmin(){
+        // Fetch data menggunakan DB select
+        $penjuals = DB::select('SELECT * FROM penjual');
+
+        return view('infoadmin', ['penjuals' => $penjuals]);
     }
 }

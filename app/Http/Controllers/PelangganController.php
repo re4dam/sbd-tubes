@@ -31,7 +31,8 @@ class PelangganController extends Controller
         // Buat pelanggan baru menggunakan SQL query
         DB::statement("
             INSERT INTO pelanggan (nama_pelanggan, no_telefon_pelanggan, email_pelanggan, password_pelanggan) 
-            VALUES ('{$request->nama_pelanggan}', '{$request->no_telefon_pelanggan}', '{$request->email_pelanggan}', '{$hashedPassword}')
+            VALUES ('{$request->nama_pelanggan}', '{$request->no_telefon_pelanggan}', '{$request->email_pelanggan}',
+             '{$hashedPassword}')
         ");
         
         // Buat user terkait (jika diperlukan) menggunakan SQL query

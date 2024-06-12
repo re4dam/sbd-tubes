@@ -8,9 +8,9 @@
     <style>
         body {
             background-image: url('dokum/badmin.jpg');
-            background-size: cover; /* Cover the entire background */
+            background-size: cover; 
             background-position: center; /* Center the background image */
-            color: white; /* Text color */
+            color: white; 
         }
 
         .hero-section {
@@ -36,7 +36,7 @@
 
         .buttons-container {
             text-align: center;
-            margin-top: -100px; /* Adjust this value to position the buttons closer or further from the banner */
+            margin-top: -100px;
         }
 
         .gallery img {
@@ -84,7 +84,8 @@
                 @csrf
                 <button class="btn btn-danger btn-custom">Logout</button>
             </form>
-            <a href="{{ route('cart') }}" class="btn btn-warning btn-custom">Booking saya</a>
+            <a href="{{ route('cart') }}" class="btn btn-success btn-custom">Booking saya</a>
+            <a href="{{ route('infoAdmin') }}" class="btn btn-warning btn-custom">Kontak kita</a>
         @else
             <a href="{{ route('login') }}" class="btn btn-info btn-custom">Login</a>
         @endauth

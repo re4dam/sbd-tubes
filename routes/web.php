@@ -36,9 +36,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // ini register
 Route::get('/register', [PelangganController::class, 'registerPage'])-> name('register');
 Route::post('/register-store', [PelangganController::class, 'pelangganCreate'])-> name('register-store');
-// Route::get('',)
 
 Route::get('dashboard', [DashboardController::class, 'dashboard']);
+Route::get('infoAdmin', [DashboardController::class, 'infoAdmin'])-> name('infoAdmin');
 
 Route::get('adminpage', [AdminController::class, 'adminpage'])->name('adminpage');
 Route::post('approve/{id_booking}', [AdminController::class, 'approval'])->name('approve');

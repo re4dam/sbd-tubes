@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class LoginController extends Controller
@@ -20,26 +21,28 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $email = $request->input('email');
+        $password = $request->input('password');
 
-        // Attempt to log the user in
-        if (Auth::attempt($credentials)) {
+        // Gunakan kueri sql untuk autentikasi user pelanggannya dari email
+        $user = DB::select('SELECT * FROM users WHERE email = ?', [$email]);
+
+        if ($user && password_verify($password, $user[0]->password)) {
+            Auth::loginUsingId($user[0]->id);
             $request->session()->regenerate();
-            // Authentication passed, redirect to intended page
-            switch (Auth::user()->tipe_user) {
+
+            // Jika autentikasi sah atau berhasil, maka akan redirected sesuai pagenya masing masing
+            switch ($user[0]->tipe_user) {
                 case 'admin':
                     return redirect('adminpage');
-                    break;
                 case 'user':
                     return redirect('dashboard');
-                    break;
                 default:
-                    return redirect('dashboard'); // Redirect to a default page
-                    break;
+                    return redirect('dashboard');
             }
         }
 
-        // Authentication failed, redirect back with an error message
+        // Autentikasi gagal
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
@@ -47,11 +50,11 @@ class LoginController extends Controller
 
     public function logout(Request $request){
         Auth::logout();
- 
+
         $request->session()->invalidate();
-     
+
         $request->session()->regenerateToken();
-     
+
         return redirect('/');
     }
 }
